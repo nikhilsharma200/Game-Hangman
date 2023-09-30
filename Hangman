@@ -1,0 +1,114 @@
+import java.util.Random; // We import the Random class to generate random numbers.
+import java.util.Scanner; // We import the Scanner class to get user input.
+
+public class HangmanGame {
+    public static void main(String[] args) {
+        // Let's define an array of words for our game, covering various categories.
+        String[] words = {
+            "apple", "banana", "cherry", "orange", "grape",   // Fruits
+            "dog", "cat", "elephant", "lion", "tiger",       // Animals
+            "car", "bicycle", "bus", "train", "motorcycle",  // Vehicles
+            "computer", "keyboard", "mouse", "monitor", "printer",  // Electronics
+            "java", "programming", "language", "code", "developer",  // Programming
+            "ocean", "beach", "island", "mountain", "forest",  // Nature
+            "music", "guitar", "piano", "drums", "singer",  // Music
+            "book", "author", "library", "novel", "reading",  // Literature
+            "pizza", "hamburger", "spaghetti", "sushi", "icecream"  // Food
+        };
+
+        // We create a Random object to help us select a random word.
+        Random random = new Random();
+
+        // Let's pick a random word from our list.
+        String wordToGuess = words[random.nextInt(words.length)];
+
+        // We set the maximum number of attempts a player can make.
+        int maxAttempts = 6;
+
+        // Initialize the number of attempts the player has made to 0.
+        int attempts = 0;
+
+        // We create an array to store guessed letters, initially filled with default values.
+        char[] guessedLetters = new char[wordToGuess.length()];
+
+        // Initialize a variable to keep track of whether the player has won.
+        boolean gameWon = false;
+
+        // Now, we create a Scanner object to get input from the player.
+        Scanner scanner = new Scanner(System.in);
+
+        // We display a warm welcome message and let the player know the maximum attempts allowed.
+        System.out.println("Welcome to Hangman!");
+        System.out.println("You have " + maxAttempts + " attempts to guess the word.");
+
+        // Here begins the main game loop.
+        while (attempts < maxAttempts) {
+            // We show the current state of the word with underscores for unguessed letters.
+            System.out.println("Word: " + displayWord(guessedLetters, wordToGuess));
+
+            // We prompt the player to enter a letter.
+            System.out.print("Enter a letter: ");
+            char guess = scanner.next().charAt(0);
+
+            // We check if the guessed letter is in the word and provide feedback.
+            if (isLetterInWord(guess, wordToGuess, guessedLetters)) {
+                System.out.println("Good guess!");
+            } else {
+                System.out.println("Sorry, that letter is not in the word.");
+                attempts++; // We increment the number of attempts.
+            }
+
+            // We check if the entire word has been guessed correctly.
+            if (isWordGuessed(guessedLetters, wordToGuess)) {
+                gameWon = true;
+                break; // We exit the game loop.
+            }
+        }
+
+        // We display the game result.
+        if (gameWon) {
+            System.out.println("Congratulations! You guessed the word: " + wordToGuess);
+        } else {
+            System.out.println("You ran out of attempts. The word was: " + wordToGuess);
+        }
+
+        // Finally, we close the Scanner to release resources.
+        scanner.close();
+    }
+
+    // This function checks if a guessed letter is in the word and updates the guessed letters.
+    static boolean isLetterInWord(char letter, String word, char[] guessedLetters) {
+        boolean found = false;
+        for (int i = 0; i < word.length(); i++) {
+            if (word.charAt(i) == letter) {
+                guessedLetters[i] = letter;
+                found = true;
+            }
+        }
+        return found;
+    }
+
+    // This function checks if the entire word has been guessed correctly.
+    static boolean isWordGuessed(char[] guessedLetters, String word) {
+        for (char c : guessedLetters) {
+            if (c == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // This function displays the current state of the word with guessed letters filled in.
+    static String displayWord(char[] guessedLetters, String word) {
+        StringBuilder display = new StringBuilder();
+        for (int i = 0; i < word.length(); i++) {
+            if (guessedLetters[i] != 0) {
+                display.append(guessedLetters[i]);
+            } else {
+                display.append("_");
+            }
+            display.append(" ");
+        }
+        return display.toString();
+    }
+}
